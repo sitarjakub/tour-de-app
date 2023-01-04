@@ -12,6 +12,7 @@ const Home = () => {
             { user && <p>{user}</p> }
             <button onClick={handleLogout}>odhlásit</button>
             llll
+            bbbb
         </div>
     );
 }
