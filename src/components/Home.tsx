@@ -11,6 +11,7 @@ const Home = () => {
         <div className="home">
             { user && <p>{user}</p> }
             <button onClick={handleLogout}>odhlásit</button>
+            llll
             pppp
         </div>
     );
