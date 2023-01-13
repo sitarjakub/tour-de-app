@@ -1,6 +1,102 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto&display=swap');
 
+:root{
+    --primary-color: #231676;
+    --secondary-color: #731676;
+}
 *{
     margin: 0;
     padding: 0;
+}
+
+.basic-loading{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    color: #333;
+    font-family: Roboto, sans-serif;
+    font-size: 32px;
+}
+
+.basic-form{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.basic-form-close{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+
+    height: 20px;
+    width: 20px;
+
+    mask: url("../img/cancel.svg");
+    mask-size: 90%;
+    mask-position: center;
+    mask-repeat: no-repeat;
+
+    background-color: #b22b2b;
+    border: none;
+    cursor: pointer;
+    transition: .5s;
+}
+.basic-form-close:hover{
+    transform: scale(1.1);
+}
+.basic-form h3{
+    color: #000;
+    font-family: Roboto, sans-serif;
+    font-size: 22px;
+    text-align: center;
+    font-weight: normal;
+}
+.basic-form label{
+    margin: 10px 0 5px 0;
+    color: #222;
+    font-family: Roboto, sans-serif;
+    font-size: 16px;
+}
+.basic-form input, .basic-form textarea{
+    padding: 5px 10px;
+
+    color: #000;
+    font-family: Roboto, sans-serif;
+    font-size: 16px;
+
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #333;
+}
+.basic-form textarea{
+    resize: none;
+}
+.basic-form button[type='submit']{
+    position: relative;
+    margin-top: 20px;
+    padding: 10px 20px;
+
+    color: #fff;
+    font-family: Roboto, sans-serif;
+    font-size: 18px;
+
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: .5s;
+}
+.basic-form button[type='submit']:hover{
+    box-shadow: 0 0 10px var(--primary-color);
+}
+.basic-form-error{
+    margin-top: 10px;
+    
+    color: #b22b2b;
+    font-size: 16px;
+    font-family: Roboto, sans-serif;
+    text-align: center;
 }
