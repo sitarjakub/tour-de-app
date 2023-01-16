@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate, Link } from "react-router-dom";
 import { useUser } from "../context/AuthContext";
 import { db } from "../setup/firebase";
 
 import '../css/home.css';
-import { collection, doc, onSnapshot, query, setDoc } from "firebase/firestore";
+import { collection, doc, getDocs, onSnapshot, query, setDoc } from "firebase/firestore";
 import Post from "./Post";
 
 interface PostData {
@@ -13,6 +12,7 @@ interface PostData {
     lang?: string,
     score?: number,
     desc?: string,
+    category?: string,
 }
 export interface Data {
     id: string,
@@ -21,6 +21,7 @@ export interface Data {
     lang?: string,
     score?: number,
     desc?: string,
+    category?: string,
 }
 export interface Filters {
     dateFrom?: string,
@@ -32,8 +33,7 @@ export interface Filters {
 }
 
 const Home = () => {
-    const {user, setUser} = useUser();
-    const navigate = useNavigate();
+    const {user} = useUser();
     
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -41,17 +41,14 @@ const Home = () => {
     const [addingError, setAddingError] = useState<string|null>(null);
     const [postData, setPostData] = useState<PostData>();
 
-    const [posts, setPosts] = useState<Array<Data>|null>([]);
+    const [posts, setPosts] = useState<Array<Data>>([]);
+    const [categories, setCategories] = useState<Array<string>>([]);
 
     const [hideFilters, setHideFilters] = useState<boolean>(true);
     const [filters, setFilters] = useState<Filters>({});
     const [sortBy, setSortBy] = useState<"date" | "time" | "lang" | "score">("date");
 
-    const handleAddFriend = () => {
-
-    }
-
-    const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>|React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>|React.ChangeEvent<HTMLTextAreaElement>|React.ChangeEvent<HTMLSelectElement>) => {
         setPostData({...postData, [e.target.id]: e.target.value});
     }
 
@@ -70,10 +67,12 @@ const Home = () => {
         e.preventDefault();
         setLoading(true);
 
-        if(postData?.score && postData.score > 0 && postData.score < 5){
+        if(!postData?.score || (postData.score > 0 && postData.score < 5)){
             const today = new Date();
             const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             const unique = Date.now();
+
+            if(postData?.category && postData.category === "") setPostData({...postData, category: undefined});
 
             await setDoc(doc(db, `users/${user}/posts/${date+"-"+unique}`), postData)
                 .then(() => {
@@ -92,6 +91,14 @@ const Home = () => {
     }
 
     useEffect(() => {
+        async function getCategories() {
+            const querySnapshot = await getDocs(collection(db, `users/${user}/categories`));
+            querySnapshot.forEach((doc) => {
+                setCategories([...categories, doc.data().name]);
+            });
+        }
+        getCategories();
+
         const q = query(collection(db, `users/${user}/posts`));
         const unsub = onSnapshot(q, (querySnapshot) => {
             function compare(a:Data, b:Data){
@@ -109,6 +116,7 @@ const Home = () => {
                 const newPost = {
                     id: doc.id,
                     date: doc.data().date,
+                    category: doc.data().category,
                     time: doc.data().time,
                     lang: doc.data().lang,
                     score: doc.data().score,
@@ -164,6 +172,19 @@ const Home = () => {
                             <h3>Přidat záznam</h3>
                             <label>datum</label>
                             <input id="date" type="date" placeholder="2.5.2022" onChange={handleInputChange}/>
+                            
+                            {categories.length > 0 && <>
+                                <label>kategorie</label>
+                                <select id="category" onChange={handleInputChange}>
+                                    <option value=""></option>
+                                    {categories.map((arg, i) => {
+                                        return(
+                                            <option value={arg} key={i}>{arg}</option>
+                                        );
+                                    })}
+                                </select>
+                            </>}
+
                             <label>strávený čas (v hodinách)</label>
                             <input id="time" type="number" step="any" placeholder="2.5" onChange={handleInputChange}/>
                             <label>programovací jazyk</label>
@@ -195,6 +216,7 @@ const Home = () => {
 
                                     <label>časový interval:</label>
                                     <input type="number" step="any" id="time" placeholder="strávený čas" onChange={handleFiltersChange} />
+
                                     <label>programovací jazyk:</label>
                                     <input type="text" id="lang" placeholder="programovací jazyk" onChange={handleFiltersChange} />
 
@@ -211,7 +233,7 @@ const Home = () => {
                                     </select>
                                 </div>
                             }
-                            {posts.map((arg) => {
+                            {posts.map((arg) => {                                
                                 return(
                                     <Post key={arg.id} data={arg} />
                                 )

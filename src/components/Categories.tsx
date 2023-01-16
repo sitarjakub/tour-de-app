@@ -1,39 +1,32 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/AuthContext";
 import { db } from "../setup/firebase";
 
 import '../css/categories.css';
 import { collection, deleteDoc, doc, onSnapshot, query, setDoc } from "firebase/firestore";
+import Category from "./Category";
 
-interface Category {
+export interface CategoryData {
     id: string,
     name: string,
 }
 
 const Categories = () => {
-    const { user, setUser } = useUser();
-    const navigate = useNavigate();
+    const { user } = useUser();
 
     const [loading, setLoading] = useState<boolean>(false);
     const [addingCategory, setAddingCategory] = useState<boolean>(false);
-    const [editingCategories, setEditingCategories] = useState<Array<Category> | null>(null);
 
     const [categoryData, setCategoryData] = useState<{name:string} | null>(null);
     const [addingError, setAddingError] = useState<string | null>(null);
 
-    const [categories, setCategories] = useState<Array<Category>|null>(null)
-
-    function handleLogout() {
-        setUser(null);
-        navigate("/login");
-    }
+    const [categories, setCategories] = useState<Array<CategoryData>|null>(null)
 
     const handleSubmitCategory = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setLoading(true);
 
-        if (categoryData?.name) {
+        if(categoryData && categoryData.name) {
             const today = new Date();
             const date = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
             const unique = Date.now();
@@ -54,27 +47,10 @@ const Categories = () => {
         }
     }
 
-    const handleEditCategory = async (id:string) => {
-        setLoading(true);
-        await deleteDoc(doc(db, `users/${user}/categories`, id))
-            .then(() => {
-                setLoading(false);
-                alert("Příspěvek smazán");
-            })
-            .catch(() => {
-                setLoading(false);
-                alert("Při mazání příspěvku došlo k chybě");
-            });
-    }
-
-    const handleDeleteCategory = async () => {
-
-    }
-
     useEffect(() => {
         const q = query(collection(db, `users/${user}/categories`));
         const unsub = onSnapshot(q, (querySnapshot) => {
-            let categoryList: Array<Category> | null = [];
+            let categoryList: Array<CategoryData> | null = [];
             querySnapshot.forEach((doc) => {
                 const newCategory = {
                     id: doc.id,
@@ -111,17 +87,13 @@ const Categories = () => {
                                 {addingError && <p className="basic-form-error">{addingError}</p>}
                             </form>
                         }
-                        {categories && categories.map((arg) => {
-                            return (
-                                <div className="categories-category" key={arg.id}>
-                                    <h5>{ arg.name }</h5>
-                                    {/* <div className="categories-category-btns">
-                                        <button className="categories-category-edit" onClick={() => setEditingCategories(prev => [...prev, arg.id])}>edit</button>
-                                        <button className="categories-category-delete" onClick={() => handleDeleteCategory(arg.id)}>delete</button>
-                                    </div> */}
-                                </div>
-                            )
-                        })}
+                        <div className="categories-categories">
+                            {categories && categories.map((arg) => {
+                                return (
+                                    <Category key={arg.id} data={arg} />
+                                )
+                            })}
+                        </div>
                     </div>
                 </>
             }

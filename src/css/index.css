@@ -133,7 +133,7 @@ header a:hover::before{
     font-family: Roboto, sans-serif;
     font-size: 16px;
 }
-.basic-form input, .basic-form textarea{
+.basic-form input, .basic-form textarea, .basic-form select{
     padding: 5px 10px;
 
     color: #000;

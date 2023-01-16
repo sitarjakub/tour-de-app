@@ -1,17 +1,18 @@
-import { deleteDoc, doc, updateDoc } from "firebase/firestore";
-import { useState } from "react";
+import { collection, deleteDoc, doc, getDocs, updateDoc } from "firebase/firestore";
+import { useEffect, useState } from "react";
 import { useUser } from "../context/AuthContext";
 import { db } from "../setup/firebase";
 import { Data } from "./Home";
 
 const Post: React.FC<{ data: Data }> = ({data}) => {
     const {user} = useUser();
+    const [loading, setLoading] = useState<boolean>(false);
+
+    const [categories, setCategories] = useState<Array<string>>([]);
 
     const [editing, setEditing] = useState<boolean>(false);
     const [editedData, setEditedData] = useState<Data>(data);
     const [editingError, setEditingError] = useState<string|null>(null);
-
-    const [loading, setLoading] = useState<boolean>(false);
 
     const deletePost = async () => {
         setLoading(true);
@@ -33,6 +34,7 @@ const Post: React.FC<{ data: Data }> = ({data}) => {
         const docRef = doc(db, `users/${user}/posts`, data.id);
         await updateDoc(docRef, {
             date: editedData.date,
+            category: editedData.category,
             time: editedData.time,
             lang: editedData.lang,
             score: editedData.score,
@@ -48,9 +50,19 @@ const Post: React.FC<{ data: Data }> = ({data}) => {
             });
     }
 
-    const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>|React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>|React.ChangeEvent<HTMLTextAreaElement>|React.ChangeEvent<HTMLSelectElement>) => {
         setEditedData({...editedData, [e.target.id]: e.target.value});
     }
+
+    useEffect(() => {
+        async function getCategories() {
+            const querySnapshot = await getDocs(collection(db, `users/${user}/categories`));
+            querySnapshot.forEach((doc) => {
+                setCategories([...categories, doc.data().name]);
+            });
+        }
+        getCategories();
+    }, [])
 
     return (
         <div className="posts-post">
@@ -68,6 +80,18 @@ const Post: React.FC<{ data: Data }> = ({data}) => {
                             <h3>Upravit záznam</h3>
                             <label>datum</label>
                             <input id="date" type="date" placeholder="2.5.2022" onChange={handleInputChange} value={editedData.date} />
+                            {categories.length > 0 && <>
+                                <label>kategorie</label>
+                                <select id="category" onChange={handleInputChange}>
+                                    <option value=""></option>
+                                    {editedData.category && !categories.includes(editedData.category) && <option value={editedData.category} selected>{editedData.category}</option> }
+                                    {categories.map((arg, i) => {
+                                        return(
+                                            <option value={arg} key={i} selected={editedData.category === arg}>{arg}</option>
+                                        );
+                                    })}
+                                </select>
+                            </>}
                             <label>strávený čas (v hodinách)</label>
                             <input id="time" type="number" step="any" placeholder="2.5" onChange={handleInputChange} value={editedData.time}/>
                             <label>programovací jazyk</label>
@@ -82,6 +106,7 @@ const Post: React.FC<{ data: Data }> = ({data}) => {
                         </form> : <>
                             <button className="posts-post-edit" onClick={() => setEditing(true)}>...</button>
                             <p>{data.date}</p>
+                            {data.category && <p>Kategorie: {data.category}</p>}
                             {data.time && <p>Strávený čas: {data.time}</p>}
                             {data.lang && <p>Programovací jazyk: {data.lang}</p>}
                             <p>{data.desc}</p>

@@ -64,22 +64,22 @@ const Friends = () => {
     }
 
     const acceptFriend = async (id:string) => {
-        let myDocRef = doc(db, `users/${user}/friends`, id);
+        const myDocRef = doc(db, `users/${user}/friends`, id);
         await updateDoc(myDocRef, {
             accepted: true
         });
 
-        let theirsDocRef = doc(db, `users/${id}/friends`, user!);
+        const theirsDocRef = doc(db, `users/${id}/friends`, user!);
         await updateDoc(theirsDocRef, {
             accepted: true
         });
     }
 
     const removeFriend = async (id:string) => {
-        let myDocRef = doc(db, `users/${user}/friends`, id);
+        const myDocRef = doc(db, `users/${user}/friends`, id);
         await deleteDoc(myDocRef);
 
-        let theirsDocRef = doc(db, `users/${id}/friends`, user!);
+        const theirsDocRef = doc(db, `users/${id}/friends`, user!);
         await deleteDoc(theirsDocRef);
     }
 
