@@ -47,11 +47,6 @@ const Home = () => {
     const [filters, setFilters] = useState<Filters>({});
     const [sortBy, setSortBy] = useState<"date" | "time" | "lang" | "score">("date");
 
-    function handleLogout() {
-        setUser(null);
-        navigate("/login");
-    }
-
     const handleAddFriend = () => {
 
     }
@@ -157,11 +152,6 @@ const Home = () => {
             {loading
                 ? <h1 className="basic-loading">Načítání...</h1>
                 : <>
-                <header>
-                    <Link to={"/"}>Domů</Link>
-                    <Link to={"/friends"}>Přátelé</Link>
-                    <button onClick={handleLogout} className="sign-out-btn">odhlásit</button>
-                </header>
                 <div className="home-content">
                     {addingPost === false
                         ? <button onClick={() => setAddingPost(true)} className="add-post-btn">Přidat záznam</button>

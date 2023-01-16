@@ -1,0 +1,41 @@
+:root{
+    --primary-color: #231676;
+    --secondary-color: #167673;
+    --bg-color: #ddd;
+}
+
+.categories{
+    margin-top: 100px;
+}
+.categories-content{
+    width: 80%;
+    margin: 0 auto;
+    padding: 50px 0;
+}
+
+.add-category-btn{
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+
+    color: #fff;
+    font-family: Roboto, sans-serif;
+    font-size: 18px;
+
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: .5s;
+}
+.add-category-btn:hover{
+    box-shadow: 0 0 15px var(--primary-color);
+}
+.add-category-form{
+    width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+
+    background-color: #eee;
+    border-radius: 20px;
+}

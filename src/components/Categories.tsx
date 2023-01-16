@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { useUser } from "../context/AuthContext";
 import { db } from "../setup/firebase";
 
-import '../css/home.css';
+import '../css/categories.css';
+import { collection, deleteDoc, doc, onSnapshot, query, setDoc } from "firebase/firestore";
 
 interface Category {
     id: string,
@@ -45,10 +46,10 @@ const Categories = () => {
                 })
                 .catch((err) => {
                     console.log(err);
-                    setAddingError("Pøi ukládání došlo k chybì");
+                    setAddingError("PÅ™i uklÃ¡dÃ¡nÃ­ doÅ¡lo k chybÄ›");
                 });
         } else {
-            setAddingError("Vyplòte název kategorie");
+            setAddingError("VyplÅˆte nÃ¡zev kategorie");
             setLoading(false);
         }
     }
@@ -58,11 +59,11 @@ const Categories = () => {
         await deleteDoc(doc(db, `users/${user}/categories`, id))
             .then(() => {
                 setLoading(false);
-                alert("Pøíspìvek smazán");
+                alert("PÅ™Ã­spÄ›vek smazÃ¡n");
             })
             .catch(() => {
                 setLoading(false);
-                alert("Pøi mazání pøíspìvku došlo k chybì");
+                alert("PÅ™i mazÃ¡nÃ­ pÅ™Ã­spÄ›vku doÅ¡lo k chybÄ›");
             });
     }
 
@@ -91,36 +92,33 @@ const Categories = () => {
 
     return (
         <div className="categories">
-            {loading === false
-                ? <h1 className="basic-loading">Naèítání...</h1>
+            {loading
+                ? <h1 className="basic-loading">NaÄÃ­tÃ¡nÃ­...</h1>
                 : <>
-                    <header>
-                        <button onClick={handleLogout} className="sign-out-btn">odhlásit</button>
-                    </header>
                     <div className = "categories-content">
                         {addingCategory === false
-                            ? <button onClick={() => setAddingPost(true)} className="add-category-btn">Pøidat kategorii</button>
+                            ? <button onClick={() => setAddingCategory(true)} className="add-category-btn">PÅ™idat kategorii</button>
                             : <form onSubmit={handleSubmitCategory} className="basic-form add-category-form">
                                 <button className="basic-form-close" onClick={() => {
                                     setAddingError(null);
-                                    setAddingPost(false);
+                                    setAddingCategory(false);
                                 }}></button>
 
-                                <h3>Pøidat kategorii</h3>
-                                <label>název</label>
-                                <input id="name" type="text" placeholder="název kategorie" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCategoryData({ name: e.target.value })} />
-                                <button type="submit" >pøidat</button>
+                                <h3>PÅ™idat kategorii</h3>
+                                <label>nÃ¡zev</label>
+                                <input id="name" type="text" placeholder="nÃ¡zev kategorie" onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCategoryData({ name: e.target.value })} />
+                                <button type="submit" >pÅ™idat</button>
                                 {addingError && <p className="basic-form-error">{addingError}</p>}
                             </form>
                         }
                         {categories && categories.map((arg) => {
                             return (
                                 <div className="categories-category" key={arg.id}>
-                                    {editingCategories.includes(arg.id) ? <input/> : < h5 > { arg.name }</h5>}
-                                    <div className="categories-category-btns">
+                                    <h5>{ arg.name }</h5>
+                                    {/* <div className="categories-category-btns">
                                         <button className="categories-category-edit" onClick={() => setEditingCategories(prev => [...prev, arg.id])}>edit</button>
                                         <button className="categories-category-delete" onClick={() => handleDeleteCategory(arg.id)}>delete</button>
-                                    </div>
+                                    </div> */}
                                 </div>
                             )
                         })}
