@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useUser } from "../context/AuthContext";
 import { db } from "../setup/firebase";
 
@@ -47,9 +47,13 @@ const Home = () => {
     const [filters, setFilters] = useState<Filters>({});
     const [sortBy, setSortBy] = useState<"date" | "time" | "lang" | "score">("date");
 
-    function handleLogout(){
+    function handleLogout() {
         setUser(null);
         navigate("/login");
+    }
+
+    const handleAddFriend = () => {
+
     }
 
     const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>|React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -154,6 +158,8 @@ const Home = () => {
                 ? <h1 className="basic-loading">Načítání...</h1>
                 : <>
                 <header>
+                    <Link to={"/"}>Domů</Link>
+                    <Link to={"/friends"}>Přátelé</Link>
                     <button onClick={handleLogout} className="sign-out-btn">odhlásit</button>
                 </header>
                 <div className="home-content">

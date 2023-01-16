@@ -1,0 +1,27 @@
+.friends{
+    margin-top: 100px;
+}
+.friends-content{
+    width: 80%;
+    margin: 0 auto;
+    padding: 50px 0;
+}
+
+.add-friend-btn{
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+
+    color: #fff;
+    font-family: Roboto, sans-serif;
+    font-size: 18px;
+
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: .5s;
+}
+.add-friend-btn:hover{
+    box-shadow: 0 0 15px var(--primary-color);
+}
