@@ -14,6 +14,68 @@
     padding: 50px 0;
 }
 /*
+////////Bio
+//////////////////
+*/
+.bio p{
+    margin-bottom: 20px;
+
+    font-size: 24px;
+    font-family: Roboto, sans-serif;
+    text-align: center;
+}
+.bio form{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    margin: 0 auto 20px;
+    max-width: 50%;
+
+    font-family: Roboto, sans-serif;
+}
+.bio label{
+    margin-bottom: 5px;
+}
+.bio-inputs{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px;
+
+    width: 100%;
+}
+.bio input{
+    padding: 5px 10px;
+
+    font-size: 16px;
+
+    background-color: var(--bg-color);
+    border: none;
+    border-radius: 10px;
+}
+.bio button{
+    background: transparent;
+    border: none;
+    cursor: pointer;
+}
+.bio button div{
+    height: 25px;
+    width: 25px;
+
+    mask: url("../img/accept.svg");
+    mask-size: 90%;
+    mask-position: center;
+    mask-repeat: no-repeat;
+
+    background-color: var(--primary-color);
+    border: none;
+    transition: .5s;
+}
+.bio button:hover div{
+    background-color: #b22b2b;
+}
+/*
 ////////Add post
 //////////////////
 */

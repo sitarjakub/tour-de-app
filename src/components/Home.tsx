@@ -5,6 +5,7 @@ import { db } from "../setup/firebase";
 import '../css/home.css';
 import { collection, doc, getDocs, onSnapshot, query, setDoc } from "firebase/firestore";
 import Post from "./Post";
+import Bio from "./Bio";
 
 interface PostData {
     date?: string,
@@ -117,9 +118,9 @@ const Home = () => {
                     id: doc.id,
                     date: doc.data().date,
                     category: doc.data().category,
-                    time: doc.data().time,
+                    time: parseFloat(doc.data().time),
                     lang: doc.data().lang,
-                    score: doc.data().score,
+                    score: parseFloat(doc.data().score),
                     desc: doc.data().desc,
                 }
 
@@ -161,6 +162,8 @@ const Home = () => {
                 ? <h1 className="basic-loading">Načítání...</h1>
                 : <>
                 <div className="home-content">
+                    <Bio />
+                    
                     {addingPost === false
                         ? <button onClick={() => setAddingPost(true)} className="add-post-btn">Přidat záznam</button>
                         : <form onSubmit={handleSubmitPost} className="basic-form add-post-form">
