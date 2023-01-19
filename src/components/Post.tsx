@@ -106,6 +106,7 @@ const Post: React.FC<{ data: Data }> = ({data}) => {
                         </form> : <>
                             <button className="posts-post-edit" onClick={() => setEditing(true)}>...</button>
                             <p>{data.date}</p>
+                            {data.friend && <p>Další programátor: {data.friend}</p>}
                             {data.category && <p>Kategorie: {data.category}</p>}
                             {data.time && <p>Strávený čas: {data.time}</p>}
                             {data.lang && <p>Programovací jazyk: {data.lang}</p>}

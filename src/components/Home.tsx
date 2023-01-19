@@ -3,7 +3,7 @@ import { useUser } from "../context/AuthContext";
 import { db } from "../setup/firebase";
 
 import '../css/home.css';
-import { collection, doc, getDocs, onSnapshot, query, setDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, onSnapshot, query, setDoc } from "firebase/firestore";
 import Post from "./Post";
 import Bio from "./Bio";
 
@@ -14,6 +14,7 @@ interface PostData {
     score?: number,
     desc?: string,
     category?: string,
+    friend?: string,
 }
 export interface Data {
     id: string,
@@ -23,6 +24,7 @@ export interface Data {
     score?: number,
     desc?: string,
     category?: string,
+    friend?: string,
 }
 export interface Filters {
     dateFrom?: string,
@@ -44,6 +46,7 @@ const Home = () => {
 
     const [posts, setPosts] = useState<Array<Data>>([]);
     const [categories, setCategories] = useState<Array<string>>([]);
+    const [friends, setFriends] = useState<Array<string>>([]);
 
     const [hideFilters, setHideFilters] = useState<boolean>(true);
     const [filters, setFilters] = useState<Filters>({});
@@ -74,6 +77,7 @@ const Home = () => {
             const unique = Date.now();
 
             if(postData?.category && postData.category === "") setPostData({...postData, category: undefined});
+            if(postData?.friend && postData.friend === "") setPostData({...postData, friend: undefined});
 
             await setDoc(doc(db, `users/${user}/posts/${date+"-"+unique}`), postData)
                 .then(() => {
@@ -94,16 +98,50 @@ const Home = () => {
     useEffect(() => {
         async function getCategories() {
             const querySnapshot = await getDocs(collection(db, `users/${user}/categories`));
-            querySnapshot.forEach((doc) => {
-                setCategories([...categories, doc.data().name]);
+            const categoriesList:Array<string> = [];
+            querySnapshot.forEach((doc) => {                
+                categoriesList.push(doc.data().name);
             });
+            setCategories(categoriesList);
         }
         getCategories();
+        
+
+        async function getFriends() {
+            const querySnapshot = await getDocs(collection(db, `users/${user}/friends`));
+            const friendsList:Array<string> = [];
+            querySnapshot.forEach(async (dcmt) => {
+                const friendsId = dcmt.data().from === user ? dcmt.data().to : dcmt.data().from;
+                let formatedFriend = friendsId;
+
+                const friendRef = dcmt.data().from === user ? doc(db, "users", dcmt.data().to) : doc(db, "users", dcmt.data().from);
+                const friendSnap = await getDoc(friendRef);
+
+                if (friendSnap.exists()) {
+                    if(friendSnap.data().username){
+                        formatedFriend = friendSnap.data().username + " - " + formatedFriend;
+                    }
+                }else{
+                    console.error("Nepodařilo se načíst kamarádovi data");
+                }
+
+                friendsList.push(formatedFriend);
+            });
+            setFriends(friendsList);
+        }
+        getFriends();
 
         const q = query(collection(db, `users/${user}/posts`));
         const unsub = onSnapshot(q, (querySnapshot) => {
             function compare(a:Data, b:Data){
-                if(a && b && a[sortBy] && b[sortBy]){
+                if(!b){
+                    return 1;
+                }
+                if(!a){
+                    return -1;
+                }
+
+                if(a[sortBy] && b[sortBy]){
                     if(a[sortBy]! < b[sortBy]!) return 1;
                     if(a[sortBy]! > b[sortBy]!) return -1;
                     return 0;
@@ -117,11 +155,18 @@ const Home = () => {
                 const newPost = {
                     id: doc.id,
                     date: doc.data().date,
+                    friend: doc.data().friend,
                     category: doc.data().category,
-                    time: parseFloat(doc.data().time),
                     lang: doc.data().lang,
-                    score: parseFloat(doc.data().score),
                     desc: doc.data().desc,
+
+                    ...doc.data().time
+                        ? { time: parseFloat(doc.data().time) }
+                        : {},
+
+                    ...doc.data().score
+                        ? { score: parseFloat(doc.data().score) }
+                        : {}
                 }
 
                 let suitsFilters = true;
@@ -138,10 +183,12 @@ const Home = () => {
                     if(newPost.lang !== filters.lang) suitsFilters = false;
                 }
                 if(filters.scoreFrom){
-                    if(newPost.score < filters.scoreFrom) suitsFilters = false;
+                    if(newPost.score && newPost.score < filters.scoreFrom) suitsFilters = false;
+                    if(!newPost.score) suitsFilters = false;
                 }
                 if(filters.scoreTo){
-                    if(newPost.score > filters.scoreTo) suitsFilters = false;
+                    if(newPost.score && newPost.score > filters.scoreTo) suitsFilters = false;
+                    if(!newPost.score) suitsFilters = false;
                 }
 
                 if(suitsFilters) postList ? postList.push(newPost) : postList = [newPost];
@@ -175,6 +222,18 @@ const Home = () => {
                             <h3>Přidat záznam</h3>
                             <label>datum</label>
                             <input id="date" type="date" placeholder="2.5.2022" onChange={handleInputChange}/>
+
+                            {friends.length > 0 && <>
+                                <label>další programátor</label>
+                                <select id="friend" onChange={handleInputChange}>
+                                    <option value=""></option>
+                                    {friends.map((arg, i) => {
+                                        return(
+                                            <option value={arg} key={i}>{arg}</option>
+                                        );
+                                    })}
+                                </select>
+                            </>}
                             
                             {categories.length > 0 && <>
                                 <label>kategorie</label>
@@ -202,7 +261,7 @@ const Home = () => {
                     }
                     
 
-                    {posts && <div className="posts">
+                    {posts.length > 0 ? <div className="posts">
                         <>
                             <button
                                 className="posts-hide-filters"
@@ -213,27 +272,50 @@ const Home = () => {
                                 && <div className="posts-filters">
                                     <h4>Filtrování</h4>
 
-                                    <label>datum (od, do):</label>
-                                    <input type="date" id="dateFrom" placeholder="datum od" onChange={handleFiltersChange} />
-                                    <input type="date" id="dateTo" placeholder="datum do" onChange={handleFiltersChange} />
+                                    <div className="posts-filters-flex">
+                                        <div>
+                                            <label>nejstarší datum:</label>
+                                            <input type="date" id="dateFrom" placeholder="datum od" onChange={handleFiltersChange} value={filters.dateFrom} />
+                                        </div>
+                                        <div>
+                                            <label>nejnovější datum:</label>
+                                            <input type="date" id="dateTo" placeholder="datum do" onChange={handleFiltersChange} value={filters.dateTo} />
+                                        </div>
 
-                                    <label>časový interval:</label>
-                                    <input type="number" step="any" id="time" placeholder="strávený čas" onChange={handleFiltersChange} />
+                                        <div>
+                                            <label>časový interval:</label>
+                                            <input type="number" step="any" id="time" placeholder="strávený čas" onChange={handleFiltersChange}  value={filters.time} />
+                                        </div>
 
-                                    <label>programovací jazyk:</label>
-                                    <input type="text" id="lang" placeholder="programovací jazyk" onChange={handleFiltersChange} />
+                                        <div>
+                                            <label>programovací jazyk:</label>
+                                            <input type="text" id="lang" placeholder="programovací jazyk" onChange={handleFiltersChange} value={filters.lang} />
+                                        </div>
 
-                                    <label>hodnocení od (od, do):</label>
-                                    <input type="number" step="any" id="scoreFrom" placeholder="hodnocení od" onChange={handleFiltersChange} />
-                                    <input type="number" step="any" id="scoreTo" placeholder="hodnocení do" onChange={handleFiltersChange} />
+                                        <div>
+                                            <label>nejmenší hodnocení:</label>
+                                            <input type="number" step="any" id="scoreFrom" placeholder="hodnocení od" onChange={handleFiltersChange} value={filters.scoreFrom} />
+                                        </div>
+                                        <div>
+                                            <label>nejvyšší hodnocení:</label>
+                                            <input type="number" step="any" id="scoreTo" placeholder="hodnocení do" onChange={handleFiltersChange} value={filters.scoreTo} />
+                                        </div>
 
-                                    <label>seřadit podle:</label>
-                                    <select onChange={handleSortChange} defaultValue={sortBy}>
-                                        <option value="date">datumu</option>
-                                        <option value="time">stráveného času</option>
-                                        <option value="lang">programovacího jazyka</option>
-                                        <option value="score">hodnocení</option>
-                                    </select>
+                                        <div>
+                                            <label>seřadit podle:</label>
+                                            <select onChange={handleSortChange} defaultValue={sortBy}>
+                                                <option value="date">datumu</option>
+                                                <option value="time">stráveného času</option>
+                                                <option value="lang">programovacího jazyka</option>
+                                                <option value="score">hodnocení</option>
+                                            </select>
+                                        </div>
+                                    </div>
+
+                                    <button onClick={() => {
+                                            setFilters({});
+                                            setHideFilters(true);
+                                        }} className="post-filters-cancel" >Zrušit filtry</button>
                                 </div>
                             }
                             {posts.map((arg) => {                                
@@ -242,7 +324,7 @@ const Home = () => {
                                 )
                             })}
                         </>
-                    </div>}
+                    </div>:<p className="home-no-posts">Žádné příspěvky k zobrazení</p>}
                 </div>
             </>}
         </div>

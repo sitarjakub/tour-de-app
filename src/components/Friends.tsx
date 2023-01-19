@@ -1,11 +1,12 @@
-import { collection, deleteDoc, doc, getDoc, onSnapshot, query, setDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, onSnapshot, query, setDoc } from "firebase/firestore";
 import {useEffect, useState} from "react";
 import { useUser } from "../context/AuthContext";
 
 import '../css/friends.css';
 import { db } from "../setup/firebase";
+import Friend from "./Friend";
 
-interface FriendsData {
+export interface FriendsData {
     id: string,
     from: string,
     to: string,
@@ -64,63 +65,34 @@ const Friends = () => {
         }
     }
 
-    const acceptFriend = async (id:string) => {
-        const myDocRef = doc(db, `users/${user}/friends`, id);
-        await updateDoc(myDocRef, {
-            accepted: true
-        });
-
-        const theirsDocRef = doc(db, `users/${id}/friends`, user!);
-        await updateDoc(theirsDocRef, {
-            accepted: true
-        });
-    }
-
-    const removeFriend = async (id:string) => {
-        const myDocRef = doc(db, `users/${user}/friends`, id);
-        await deleteDoc(myDocRef);
-
-        const theirsDocRef = doc(db, `users/${id}/friends`, user!);
-        await deleteDoc(theirsDocRef);
-    }
-
     useEffect(() => {
-
         const q = query(collection(db, `users/${user}/friends`));
         const unsub = onSnapshot(q, (querySnapshot) => {
             let friendsList:Array<FriendsData> = [];
             let friendReqsList:Array<FriendsData> = [];
 
             querySnapshot.forEach(async (dcmt) => {
-                let username:string|null = null;
-
-                const docRef = dcmt.data().from === user ? doc(db, "users", dcmt.data().to) : doc(db, "users", dcmt.data().from);
-                const docSnap = await getDoc(docRef).then((res) => {
-                    if(res.exists()) {
-                        username = res.data().username ? res.data().username : null;
-                    }
-    
                     const newFriend = {
                         id: dcmt.id,
                         from: dcmt.data().from,
                         to: dcmt.data().to,
                         accepted: dcmt.data().accepted,
-                        username: username,
                         date: dcmt.data().date,
                     }                
     
                     if(newFriend.accepted === false && newFriend.from !== user) friendReqsList.push(newFriend);
                     if(newFriend.accepted === true) friendsList.push(newFriend);
-                });
-            })
+            });
             setFriendReqs(friendReqsList);
             setFriends(friendsList);
-        });
-
+        })
+        
         return () => {
             unsub()
         }
-    }, [])
+    }, []);
+
+    
 
     return (
         <div className="friends">
@@ -148,28 +120,13 @@ const Friends = () => {
                         <div className="friends-friends">
                             {friendReqs.length > 0 && friendReqs.map(arg => {
                                 return(
-                                    <div className="friends-friend-reqs" key={arg.id}>
-                                        {arg.username && <p>{arg.username}</p>}
-                                        <p>{arg.from}</p>
-                                        <p className="friends-friend-date">{arg.date}</p>
-                                        <div className="friend-reqs-btns">
-                                            <button onClick={() => {acceptFriend(arg.id)}}>potvrdit</button>
-                                            <button onClick={() => {removeFriend(arg.id)}}>odstranit</button>
-                                        </div>
-                                    </div>
+                                    <Friend data={arg} req={true} key={arg.id} />
                                 );
                             })}
 
-                            {friends.length > 0  && friends.map(arg => {
-                                console.log(friends);
-                                
+                            {friends.length > 0  && friends.map(arg => {                                
                                 return(
-                                    <div className="friends-friend" key={arg.id}>
-                                        <p>{arg.date}</p>
-                                        {arg.username && <p>{arg.username}</p>}
-                                        {arg.from === user ? <p>{arg.to}</p> : <p>{arg.from}</p>}
-                                        <button className="friends-friend-remove" onClick={() => {removeFriend(arg.id)}}>odstranit přítele</button>
-                                    </div>
+                                    <Friend data={arg} req={false} key={arg.id} />
                                 );
                             })}
                         </div>
