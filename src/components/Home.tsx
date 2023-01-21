@@ -56,6 +56,23 @@ const Home = () => {
         setPostData({...postData, [e.target.id]: e.target.value});
     }
 
+    const handleCheckboxChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        const currentCategories = postData?.category;
+
+        if(!currentCategories){
+            setPostData({...postData, category: e.target.id})
+        }else{
+            let currentCategoriesList = currentCategories.split(',');
+            if(currentCategories.includes(e.target.id)){
+                currentCategoriesList = currentCategoriesList.filter(element => element !== e.target.id);
+                setPostData({...postData, category: currentCategoriesList.join()});
+            }else{
+                currentCategoriesList.push(e.target.id);
+                setPostData({...postData, category: currentCategoriesList.join()});
+            }
+        }
+    }
+
     const handleFiltersChange = (e:React.ChangeEvent<HTMLInputElement>|React.ChangeEvent<HTMLSelectElement>) => {
         setFilters({...filters, [e.target.id]: e.target.value});
     }
@@ -237,14 +254,14 @@ const Home = () => {
                             
                             {categories.length > 0 && <>
                                 <label>kategorie</label>
-                                <select id="category" onChange={handleInputChange}>
-                                    <option value=""></option>
-                                    {categories.map((arg, i) => {
-                                        return(
-                                            <option value={arg} key={i}>{arg}</option>
-                                        );
-                                    })}
-                                </select>
+                                {categories.map((arg, i) => {
+                                    return(
+                                        <div key={i}>
+                                            <input id={arg} type="checkbox" value={arg} onChange={handleCheckboxChange} />
+                                            <label htmlFor={arg}>{arg}</label>
+                                        </div>
+                                    );
+                                })}
                             </>}
 
                             <label>strávený čas (v hodinách)</label>

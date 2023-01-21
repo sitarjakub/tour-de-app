@@ -54,12 +54,31 @@ const Post: React.FC<{ data: Data }> = ({data}) => {
         setEditedData({...editedData, [e.target.id]: e.target.value});
     }
 
+    const handleCheckboxChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        const currentCategories = editedData?.category;
+
+        if(!currentCategories){
+            setEditedData({...editedData, category: e.target.id})
+        }else{
+            let currentCategoriesList = currentCategories.split(',');
+            if(currentCategories.includes(e.target.id)){
+                currentCategoriesList = currentCategoriesList.filter(element => element !== e.target.id);
+                setEditedData({...editedData, category: currentCategoriesList.join()});
+            }else{
+                currentCategoriesList.push(e.target.id);
+                setEditedData({...editedData, category: currentCategoriesList.join()});
+            }
+        }
+    }
+
     useEffect(() => {
         async function getCategories() {
             const querySnapshot = await getDocs(collection(db, `users/${user}/categories`));
-            querySnapshot.forEach((doc) => {
-                setCategories([...categories, doc.data().name]);
+            const categoriesList:Array<string> = [];
+            querySnapshot.forEach((doc) => {                
+                categoriesList.push(doc.data().name);
             });
+            setCategories(categoriesList);
         }
         getCategories();
     }, [])
@@ -80,17 +99,28 @@ const Post: React.FC<{ data: Data }> = ({data}) => {
                             <h3>Upravit záznam</h3>
                             <label>datum</label>
                             <input id="date" type="date" placeholder="2.5.2022" onChange={handleInputChange} value={editedData.date} />
-                            {categories.length > 0 && <>
+                            {(categories.length > 0 || data.category) && <>
                                 <label>kategorie</label>
-                                <select id="category" onChange={handleInputChange}>
-                                    <option value=""></option>
-                                    {editedData.category && !categories.includes(editedData.category) && <option value={editedData.category} selected>{editedData.category}</option> }
-                                    {categories.map((arg, i) => {
-                                        return(
-                                            <option value={arg} key={i} selected={editedData.category === arg}>{arg}</option>
-                                        );
+                                {categories.length > 0 && <>
+                                    {data.category && data.category.split(',').map((arg, i) => {
+                                        if(!categories.includes(arg)){
+                                            return(
+                                                <div key={i}>
+                                                    <input id={arg} type="checkbox" value={arg} onChange={handleCheckboxChange} checked />
+                                                    <label htmlFor={arg}>{arg}</label>
+                                                </div>
+                                            )
+                                        }
                                     })}
-                                </select>
+                                </>}
+                                {categories.map((arg, i) => {
+                                    return(
+                                        <div key={i}>
+                                            <input id={arg} type="checkbox" value={arg} onChange={handleCheckboxChange} checked={data.category?.split(',').includes(arg)} />
+                                            <label htmlFor={arg}>{arg}</label>
+                                        </div>
+                                    );
+                                })}
                             </>}
                             <label>strávený čas (v hodinách)</label>
                             <input id="time" type="number" step="any" placeholder="2.5" onChange={handleInputChange} value={editedData.time}/>
