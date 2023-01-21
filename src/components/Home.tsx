@@ -33,6 +33,7 @@ export interface Filters {
     lang?: string,
     scoreFrom?: number,
     scoreTo?: number,
+    category?: Array<string>,
 }
 
 const Home = () => {
@@ -75,6 +76,20 @@ const Home = () => {
 
     const handleFiltersChange = (e:React.ChangeEvent<HTMLInputElement>|React.ChangeEvent<HTMLSelectElement>) => {
         setFilters({...filters, [e.target.id]: e.target.value});
+    }
+
+    const handleCheckboxFiltersChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+        let newFiltersCategory = [];
+        if(filters.category?.includes(e.target.id)){
+            newFiltersCategory = filters.category.filter(arg => arg !== e.target.id);
+        }else{
+            if(filters.category && filters.category?.length > 0){
+                newFiltersCategory = [...filters.category, e.target.id];
+            }else{
+                newFiltersCategory = [e.target.id];
+            }
+        }
+        setFilters({...filters, category: newFiltersCategory});
     }
 
     const handleSortChange = (e:React.ChangeEvent<HTMLSelectElement>) => {
@@ -207,6 +222,19 @@ const Home = () => {
                     if(newPost.score && newPost.score > filters.scoreTo) suitsFilters = false;
                     if(!newPost.score) suitsFilters = false;
                 }
+                if(filters.category && filters.category.length > 0){
+                    if(!newPost.category){
+                        suitsFilters = false;
+                    }else{
+                        let includesCategory = false;
+                        newPost.category.split(',').forEach((element:string) => {
+                            if(filters.category?.includes(element)){
+                                includesCategory = true;
+                            }
+                        });
+                        suitsFilters = includesCategory ? false : true;
+                    }
+                }
 
                 if(suitsFilters) postList ? postList.push(newPost) : postList = [newPost];
             });
@@ -290,35 +318,35 @@ const Home = () => {
                                     <h4>Filtrování</h4>
 
                                     <div className="posts-filters-flex">
-                                        <div>
+                                        <div className="posts-filters-filter">
                                             <label>nejstarší datum:</label>
                                             <input type="date" id="dateFrom" placeholder="datum od" onChange={handleFiltersChange} value={filters.dateFrom} />
                                         </div>
-                                        <div>
+                                        <div className="posts-filters-filter">
                                             <label>nejnovější datum:</label>
                                             <input type="date" id="dateTo" placeholder="datum do" onChange={handleFiltersChange} value={filters.dateTo} />
                                         </div>
 
-                                        <div>
+                                        <div className="posts-filters-filter">
                                             <label>časový interval:</label>
                                             <input type="number" step="any" id="time" placeholder="strávený čas" onChange={handleFiltersChange}  value={filters.time} />
                                         </div>
 
-                                        <div>
+                                        <div className="posts-filters-filter">
                                             <label>programovací jazyk:</label>
                                             <input type="text" id="lang" placeholder="programovací jazyk" onChange={handleFiltersChange} value={filters.lang} />
                                         </div>
 
-                                        <div>
+                                        <div className="posts-filters-filter">
                                             <label>nejmenší hodnocení:</label>
                                             <input type="number" step="any" id="scoreFrom" placeholder="hodnocení od" onChange={handleFiltersChange} value={filters.scoreFrom} />
                                         </div>
-                                        <div>
+                                        <div className="posts-filters-filter">
                                             <label>nejvyšší hodnocení:</label>
                                             <input type="number" step="any" id="scoreTo" placeholder="hodnocení do" onChange={handleFiltersChange} value={filters.scoreTo} />
                                         </div>
 
-                                        <div>
+                                        <div className="posts-filters-filter">
                                             <label>seřadit podle:</label>
                                             <select onChange={handleSortChange} defaultValue={sortBy}>
                                                 <option value="date">datumu</option>
@@ -326,6 +354,18 @@ const Home = () => {
                                                 <option value="lang">programovacího jazyka</option>
                                                 <option value="score">hodnocení</option>
                                             </select>
+                                        </div>
+
+                                        <div className="posts-filters-filter posts-filters-checkboxes">
+                                            <label>kategorie:</label>
+                                            {categories.length > 0 && 
+                                                categories.map((arg, i) => {
+                                                    return(<div key={i}>
+                                                        <input id={arg} type="checkbox" value={arg} onChange={handleCheckboxFiltersChange} checked={!filters.category?.includes(arg)} />
+                                                        <label htmlFor={arg}>{arg}</label>
+                                                    </div>);
+                                                })
+                                            }
                                         </div>
                                     </div>
 

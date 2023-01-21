@@ -162,12 +162,12 @@
 }
 .posts-filters-flex{
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
     justify-content: space-around;
 }
-.posts-filters-flex div{
-    width: 40%;
+.posts-filters-filter{
+    width: 80%;
 }
 .posts-filters label{
     display: block;
@@ -184,6 +184,12 @@
     background-color: #fff;
     border: none;
     border-bottom: 1px solid var(--primary-color);
+}
+.posts-filters-checkboxes input{
+    width: auto !important;
+}
+.posts-filters-checkboxes label{
+    display: inline;
 }
 .post-filters-cancel{
     display: block;
