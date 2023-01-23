@@ -82,6 +82,68 @@ header a::before{
 header a:hover::before{
     left: 0;
 }
+.header-menu{
+    display: none;
+}
+.sidebar{
+    display: none;
+}
+@media only screen and (max-width: 800px){
+    header a{
+        display: none;
+    }
+    .sign-out-btn{
+        display: none;
+    }
+    .header-menu{
+        display: block;
+
+        height: 25px;
+        width: 25px;
+        margin: 0 auto 0 30px;
+
+        mask: url("../img/menu.svg");
+        mask-size: 90%;
+        mask-position: center;
+        mask-repeat: no-repeat;
+
+        background-color: #000;
+        cursor: pointer;
+    }
+    .sidebar{
+        position: fixed;
+        top: 100px;
+        left: 0;
+        z-index: 1001;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+
+        height: calc(100vh - 100px);
+
+        font-family: Roboto, sans-serif;
+        background-color: rgba(255, 255, 255, 0.8);
+    }
+    .sidebar a{
+        width: 100%;
+        min-width: 30vw;
+        padding: 5px 0;
+
+        color: #000;
+        font-size: 18px;
+        text-align: center;
+        text-decoration: none;
+
+        border-bottom: 1px solid #000;
+        transition: .5s;
+    }
+    .sidebar a:hover{
+        background-color: var(--primary-color);
+        color: #fff;
+    }
+}
 
 .basic-loading{
     position: absolute;
@@ -146,6 +208,9 @@ header a:hover::before{
 }
 .basic-form textarea{
     resize: none;
+}
+.checkbox-div label{
+    margin-left: 10px !important;
 }
 .basic-form button[type='submit']{
     position: relative;

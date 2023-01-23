@@ -284,7 +284,7 @@ const Home = () => {
                                 <label>kategorie</label>
                                 {categories.map((arg, i) => {
                                     return(
-                                        <div key={i}>
+                                        <div key={i} className="checkbox-div">
                                             <input id={arg} type="checkbox" value={arg} onChange={handleCheckboxChange} />
                                             <label htmlFor={arg}>{arg}</label>
                                         </div>

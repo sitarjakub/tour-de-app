@@ -115,7 +115,7 @@ const Post: React.FC<{ data: Data }> = ({data}) => {
                                 </>}
                                 {categories.map((arg, i) => {
                                     return(
-                                        <div key={i}>
+                                        <div key={i} className="checkbox-div" >
                                             <input id={arg} type="checkbox" value={arg} onChange={handleCheckboxChange} checked={data.category?.split(',').includes(arg)} />
                                             <label htmlFor={arg}>{arg}</label>
                                         </div>
