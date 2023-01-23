@@ -42,7 +42,7 @@ const Login = () => {
     }
 
     function changeData(e:React.ChangeEvent<HTMLInputElement>){
-        setData({...data, [e.target.id]: e.target.value});        
+        setData({...data, [e.target.id]: e.target.value});
     }
 
     return (

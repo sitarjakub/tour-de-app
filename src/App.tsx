@@ -7,6 +7,7 @@ import Login from './components/Login';
 import { AuthProvider, useUser } from './context/AuthContext';
 import Friends from './components/Friends';
 import Categories from './components/Categories';
+import Register from './components/Register';
 
 function App() {
   const {setUser} = useUser();
@@ -32,6 +33,7 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path='/login' element={<Login />} />
+          <Route path='/register' element={<Register />} />
           <Route path='/' element={<RequireAuth><Home /></RequireAuth>} />
           <Route path='/friends' element={<RequireAuth><Friends /></RequireAuth>} />
           <Route path='/categories' element={<RequireAuth><Categories /></RequireAuth>} />

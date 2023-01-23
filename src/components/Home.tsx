@@ -228,11 +228,11 @@ const Home = () => {
                     }else{
                         let includesCategory = false;
                         newPost.category.split(',').forEach((element:string) => {
-                            if(filters.category?.includes(element)){
+                            if(!filters.category!.includes(element)){
                                 includesCategory = true;
                             }
                         });
-                        suitsFilters = includesCategory ? false : true;
+                        suitsFilters = includesCategory ? true : false;
                     }
                 }
 
@@ -306,82 +306,82 @@ const Home = () => {
                     }
                     
 
-                    {posts.length > 0 ? <div className="posts">
-                        <>
-                            <button
-                                className="posts-hide-filters"
-                                style={{ backgroundColor: hideFilters ? "#ddd" : "#231676", }}
-                                onClick={() => setHideFilters(prev => !prev)
-                            }><div style={{ backgroundColor: hideFilters ? "#000" : "#ddd", }}></div></button>
-                            {hideFilters === false
-                                && <div className="posts-filters">
-                                    <h4>Filtrování</h4>
+                    <div className="posts">
+                        <button
+                            className="posts-hide-filters"
+                            style={{ backgroundColor: hideFilters ? "#ddd" : "#231676", }}
+                            onClick={() => setHideFilters(prev => !prev)
+                        }><div style={{ backgroundColor: hideFilters ? "#000" : "#ddd", }}></div></button>
+                        {hideFilters === false
+                            && <div className="posts-filters">
+                                <h4>Filtrování</h4>
 
-                                    <div className="posts-filters-flex">
-                                        <div className="posts-filters-filter">
-                                            <label>nejstarší datum:</label>
-                                            <input type="date" id="dateFrom" placeholder="datum od" onChange={handleFiltersChange} value={filters.dateFrom} />
-                                        </div>
-                                        <div className="posts-filters-filter">
-                                            <label>nejnovější datum:</label>
-                                            <input type="date" id="dateTo" placeholder="datum do" onChange={handleFiltersChange} value={filters.dateTo} />
-                                        </div>
-
-                                        <div className="posts-filters-filter">
-                                            <label>časový interval:</label>
-                                            <input type="number" step="any" id="time" placeholder="strávený čas" onChange={handleFiltersChange}  value={filters.time} />
-                                        </div>
-
-                                        <div className="posts-filters-filter">
-                                            <label>programovací jazyk:</label>
-                                            <input type="text" id="lang" placeholder="programovací jazyk" onChange={handleFiltersChange} value={filters.lang} />
-                                        </div>
-
-                                        <div className="posts-filters-filter">
-                                            <label>nejmenší hodnocení:</label>
-                                            <input type="number" step="any" id="scoreFrom" placeholder="hodnocení od" onChange={handleFiltersChange} value={filters.scoreFrom} />
-                                        </div>
-                                        <div className="posts-filters-filter">
-                                            <label>nejvyšší hodnocení:</label>
-                                            <input type="number" step="any" id="scoreTo" placeholder="hodnocení do" onChange={handleFiltersChange} value={filters.scoreTo} />
-                                        </div>
-
-                                        <div className="posts-filters-filter">
-                                            <label>seřadit podle:</label>
-                                            <select onChange={handleSortChange} defaultValue={sortBy}>
-                                                <option value="date">datumu</option>
-                                                <option value="time">stráveného času</option>
-                                                <option value="lang">programovacího jazyka</option>
-                                                <option value="score">hodnocení</option>
-                                            </select>
-                                        </div>
-
-                                        <div className="posts-filters-filter posts-filters-checkboxes">
-                                            <label>kategorie:</label>
-                                            {categories.length > 0 && 
-                                                categories.map((arg, i) => {
-                                                    return(<div key={i}>
-                                                        <input id={arg} type="checkbox" value={arg} onChange={handleCheckboxFiltersChange} checked={!filters.category?.includes(arg)} />
-                                                        <label htmlFor={arg}>{arg}</label>
-                                                    </div>);
-                                                })
-                                            }
-                                        </div>
+                                <div className="posts-filters-flex">
+                                    <div className="posts-filters-filter">
+                                        <label>nejstarší datum:</label>
+                                        <input type="date" id="dateFrom" placeholder="datum od" onChange={handleFiltersChange} value={filters.dateFrom} />
+                                    </div>
+                                    <div className="posts-filters-filter">
+                                        <label>nejnovější datum:</label>
+                                        <input type="date" id="dateTo" placeholder="datum do" onChange={handleFiltersChange} value={filters.dateTo} />
                                     </div>
 
-                                    <button onClick={() => {
-                                            setFilters({});
-                                            setHideFilters(true);
-                                        }} className="post-filters-cancel" >Zrušit filtry</button>
+                                    <div className="posts-filters-filter">
+                                        <label>časový interval:</label>
+                                        <input type="number" step="any" id="time" placeholder="strávený čas" onChange={handleFiltersChange}  value={filters.time} />
+                                    </div>
+
+                                    <div className="posts-filters-filter">
+                                        <label>programovací jazyk:</label>
+                                        <input type="text" id="lang" placeholder="programovací jazyk" onChange={handleFiltersChange} value={filters.lang} />
+                                    </div>
+
+                                    <div className="posts-filters-filter">
+                                        <label>nejmenší hodnocení:</label>
+                                        <input type="number" step="any" id="scoreFrom" placeholder="hodnocení od" onChange={handleFiltersChange} value={filters.scoreFrom} />
+                                    </div>
+                                    <div className="posts-filters-filter">
+                                        <label>nejvyšší hodnocení:</label>
+                                        <input type="number" step="any" id="scoreTo" placeholder="hodnocení do" onChange={handleFiltersChange} value={filters.scoreTo} />
+                                    </div>
+
+                                    <div className="posts-filters-filter">
+                                        <label>seřadit podle:</label>
+                                        <select onChange={handleSortChange} defaultValue={sortBy}>
+                                            <option value="date">datumu</option>
+                                            <option value="time">stráveného času</option>
+                                            <option value="lang">programovacího jazyka</option>
+                                            <option value="score">hodnocení</option>
+                                        </select>
+                                    </div>
+
+                                    <div className="posts-filters-filter posts-filters-checkboxes">
+                                        <label>kategorie:</label>
+                                        {categories.length > 0 && 
+                                            categories.map((arg, i) => {
+                                                return(<div key={i}>
+                                                    <input id={arg} type="checkbox" value={arg} onChange={handleCheckboxFiltersChange} checked={!filters.category?.includes(arg)} />
+                                                    <label htmlFor={arg}>{arg}</label>
+                                                </div>);
+                                            })
+                                        }
+                                    </div>
                                 </div>
-                            }
+
+                                <button onClick={() => {
+                                        setFilters({});
+                                        setHideFilters(true);
+                                    }} className="post-filters-cancel" >Zrušit filtry</button>
+                            </div>
+                        }
+                        {posts.length > 0 ? <>
                             {posts.map((arg) => {                                
                                 return(
                                     <Post key={arg.id} data={arg} />
                                 )
                             })}
-                        </>
-                    </div>:<p className="home-no-posts">Žádné příspěvky k zobrazení</p>}
+                        </>:<p className="home-no-posts">Žádné příspěvky k zobrazení</p>}
+                    </div>
                 </div>
             </>}
         </div>
