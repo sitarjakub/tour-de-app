@@ -43,8 +43,10 @@ const Bio = () => {
     return (
         <div className="bio">
             {username && editing === false
-                ? <p onClick={() => setEditing(true)}>{username}</p>
-                : <form onSubmit={changeUsername}>
+                ? <div className="bio-view">
+                    <p>{username}</p>
+                    <button onClick={() => setEditing(true)}><div></div></button>
+                </div> : <form onSubmit={changeUsername}>
                     <label>uživatelské jméno</label>
                     <div className="bio-inputs">
                         <input type="text" placeholder="uživatelské jméno" value={newUsername} onChange={(e:React.ChangeEvent<HTMLInputElement>) => {
