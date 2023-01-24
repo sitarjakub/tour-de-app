@@ -12,7 +12,7 @@ interface User{
     confirmpassword?: string
 }
 
-const Login = () => {
+const Register = () => {
     const[data, setData] = useState<User>({});
     const[error, setError] = useState<string | null>(null);
     const[loading, setLoading] = useState<boolean>(false);
@@ -82,4 +82,4 @@ const Login = () => {
     );
 }
  
-export default Login;
+export default Register;
