@@ -1,5 +1,6 @@
 import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router";
 import { useUser } from "../context/AuthContext";
 import { db } from "../setup/firebase";
 
@@ -9,6 +10,8 @@ const Bio = () => {
 
     const [editing, setEditing] = useState<boolean>(false);
     const [newUsername, setNewUsername] = useState<string>("");
+
+    const navigate = useNavigate();
 
     const changeUsername = async (e:React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -54,9 +57,9 @@ const Bio = () => {
                         }} />
                         <button type="submit"><div></div></button>
                     </div>
+                    <button className="bio-delete-profile" onClick={() => navigate("delete")}>Odstranit profil</button>
                 </form>
             }
-            
         </div>
     );
 }

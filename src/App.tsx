@@ -9,6 +9,7 @@ import Friends from './components/Friends';
 import Categories from './components/Categories';
 import Register from './components/Register';
 import { useState } from 'react';
+import DeleteAcc from './components/DeleteAcc';
 
 function App() {
   const {setUser} = useUser();
@@ -33,6 +34,9 @@ function App() {
             <Link to={"/"} onClick={() => setDisplaySidebar(false)}>Domů</Link>
             <Link to={"/friends"} onClick={() => setDisplaySidebar(false)}>Přátelé</Link>
             <Link to={"/categories"} onClick={() => setDisplaySidebar(false)}>Kategorie</Link>
+            <a onClick={() => {
+              setUser(null);
+            }}>Odhlásit</a>
           </div>
         }
 
@@ -49,6 +53,7 @@ function App() {
           <Route path='/' element={<RequireAuth><Home /></RequireAuth>} />
           <Route path='/friends' element={<RequireAuth><Friends /></RequireAuth>} />
           <Route path='/categories' element={<RequireAuth><Categories /></RequireAuth>} />
+          <Route path='/delete' element={<RequireAuth><DeleteAcc /></RequireAuth>} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

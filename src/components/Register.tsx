@@ -24,7 +24,7 @@ const Register = () => {
         e.preventDefault();
         setLoading(true);
         if(data.email && data.password && data.confirmpassword){   
-            if(data.password == data.confirmpassword)    {
+            if(data.password === data.confirmpassword)    {
                 createUserWithEmailAndPassword(auth, data.email, data.password)
                 .then((userCredential) => {
                     setUser(userCredential.user.uid);
@@ -36,21 +36,17 @@ const Register = () => {
                     }else{
                         setError("Chyba serveru");
                     }
-                    if (err.code == "auth/email-already-in-use"){
+                    if (err.code === "auth/email-already-in-use"){
                         setError("Email je již zaregistrovaný");
                     }
-                    if (err.code == "auth/weak-password"){
+                    if (err.code === "auth/weak-password"){
                         setError("Heslo je příliš krátké, musí mít alespoň 6 znaků");
                     }
                 });
             } 
             else{
                 setError("Hesla se neshodují :((");
-            }    
-
-                
-
-                
+            }          
         }else{
             setError("Vyplňte všechny pole, prosím");
         }

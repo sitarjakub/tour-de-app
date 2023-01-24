@@ -6,7 +6,7 @@ import { auth } from "../setup/firebase";
 import '../css/login.css';
 import { useUser } from "../context/AuthContext";
 
-interface User{
+export interface User{
     email?: string,
     password?: string
 }

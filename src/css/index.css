@@ -124,7 +124,7 @@ header a:hover::before{
         height: calc(100vh - 100px);
 
         font-family: Roboto, sans-serif;
-        background-color: rgba(255, 255, 255, 0.8);
+        background-color: #fff;
     }
     .sidebar a{
         width: 100%;
