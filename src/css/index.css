@@ -100,7 +100,6 @@ header a:hover::before{
 
         height: 25px;
         width: 25px;
-        margin: 0 auto 0 30px;
 
         mask: url("../img/menu.svg");
         mask-size: 90%;
@@ -119,29 +118,29 @@ header a:hover::before{
         display: flex;
         flex-direction: column;
         align-items: center;
+        justify-content: center;
         gap: 20px;
 
         height: calc(100vh - 100px);
+        width: 100%;
 
         font-family: Roboto, sans-serif;
-        background-color: #fff;
+        background-color: rgba(255, 255, 255, 0.8);
     }
     .sidebar a{
         width: 100%;
-        min-width: 30vw;
         padding: 5px 0;
 
         color: #000;
         font-size: 18px;
         text-align: center;
-        text-decoration: none;
+        text-decoration: underline;
 
-        border-bottom: 1px solid #000;
         transition: .5s;
+        cursor: pointer;
     }
     .sidebar a:hover{
-        background-color: var(--primary-color);
-        color: #fff;
+        letter-spacing: 3px;
     }
 }
 
