@@ -1,0 +1,110 @@
+:root{
+    --primary-color: #231676;
+    --secondary-color: #167673;
+    --bg-color: #ddd;
+}
+
+.categories{
+    margin-top: 100px;
+}
+.categories-content{
+    width: 80%;
+    margin: 0 auto;
+    padding: 50px 0;
+}
+
+.add-category-btn{
+    display: block;
+    margin: 0 auto;
+    padding: 10px 20px;
+
+    color: #fff;
+    font-family: Roboto, sans-serif;
+    font-size: 18px;
+
+    background-color: var(--primary-color);
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: .5s;
+}
+.add-category-btn:hover{
+    box-shadow: 0 0 15px var(--primary-color);
+}
+.add-category-form{
+    width: 50%;
+    margin: 0 auto;
+    padding: 20px;
+
+    background-color: #eee;
+    border-radius: 20px;
+}
+.categories-categories{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+
+    width: 50%;
+    margin: 0 auto;
+    padding: 30px 0;
+}
+
+.categories-category{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
+    width: calc(100% - 40px);
+    padding: 20px;
+
+    font-family: Roboto, sans-serif;
+
+    background-color: var(--bg-color);
+    border-radius: 20px;
+}
+.categories-category-btns{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+}
+.categories-category-btns button{
+    padding: 5px 10px;
+
+    color: #fff;
+    font-family: Roboto, sans-serif;
+    font-size: 16px;
+
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .5s;
+}
+.categories-category-btns button:first-child{
+    background-color: var(--primary-color);
+}
+.categories-category-btns button:first-child:hover{
+    background-color: #000;
+}
+.categories-category-btns button:last-child{
+    background-color: #b22b2b;
+}
+.categories-category-btns button:last-child:hover{
+    background-color: #791e1e;
+}
+.categories-category input{
+    padding: 5px 10px;
+    font-family: Roboto, sans-serif;
+    font-size: 14px;
+
+    background-color: #fff;
+    border: none;
+    border-radius: 10px;
+}
+@media only screen and (max-width: 1300px){
+    .categories-categories{
+        width: 100%;
+    }
+}
