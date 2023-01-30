@@ -58,6 +58,7 @@ const Login = () => {
                 <button type="submit" disabled={loading}>Přihlásit</button>
             </form>
             <p className="login-register-paragraph">Nemáte ještě účet? <Link to={'/register'}>registrace</Link> </p>
+            <p className="login-secret">Tour de App secret: 1ce0c03891c8148684bb6ddcca2c6b2b</p>
 
             {error && <p className="login-error">{error}</p> }
             {loading && <p className="login-loading">Loading...</p> }
