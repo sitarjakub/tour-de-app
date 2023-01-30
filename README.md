@@ -1,3 +1,9 @@
+# Informace o týmu
+
+Název týmu už si nepamatujeme (asi Slesi), ale tohle je náš Secret: 1ce0c03891c8148684bb6ddcca2c6b2b \
+Členové týmu: Jakub Sitár a Tomáš Slezák \
+Odkay na na3i aplikaci: https://tour-de-app-1cd79.web.app
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
