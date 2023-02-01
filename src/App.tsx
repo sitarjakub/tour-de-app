@@ -1,10 +1,10 @@
-import { BrowserRouter, Routes, Route, Navigate, Link, useNavigate } from 'react-router-dom';
+import { Routes, Route, Navigate, Link } from 'react-router-dom';
 
 import './css/index.css';
 
 import Home from './components/Home';
 import Login from './components/Login';
-import { AuthProvider, useUser } from './context/AuthContext';
+import { useUser } from './context/AuthContext';
 import Friends from './components/Friends';
 import Categories from './components/Categories';
 import Register from './components/Register';
@@ -45,8 +45,6 @@ function App() {
   };
 
   return (
-    <AuthProvider>
-      <BrowserRouter>
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
@@ -55,8 +53,6 @@ function App() {
           <Route path='/categories' element={<RequireAuth><Categories /></RequireAuth>} />
           <Route path='/delete' element={<RequireAuth><DeleteAcc /></RequireAuth>} />
         </Routes>
-      </BrowserRouter>
-    </AuthProvider>
   );
 }
 
