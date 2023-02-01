@@ -4,7 +4,7 @@ import { NavigateFunction } from "react-router";
 import { useUser } from "../context/AuthContext";
 import { db } from "../setup/firebase";
 
-const Bio: React.FC<{nav: NavigateFunction}> = (nav) => {
+const Bio = () => {
     const {user} = useUser();
     const [username, setUsername] = useState<string|null>(null);
 
@@ -55,7 +55,7 @@ const Bio: React.FC<{nav: NavigateFunction}> = (nav) => {
                         }} />
                         <button type="submit"><div></div></button>
                     </div>
-                    <button className="bio-delete-profile" onClick={() => nav.nav("/delete")}>Odstranit profil</button>
+                    {/* <button className="bio-delete-profile" onClick={() => nav.nav("/delete")}>Odstranit profil</button> */}
                 </form>
             }
         </div>

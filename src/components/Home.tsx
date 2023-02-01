@@ -40,7 +40,7 @@ export interface Filters {
 const Home = () => {
     const {user} = useUser();
     
-    const navigate = useNavigate();
+    //const navigate = useNavigate();
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -257,7 +257,8 @@ const Home = () => {
                 ? <h1 className="basic-loading">Načítání...</h1>
                 : <>
                 <div className="home-content">
-                    <Bio nav={navigate} />
+                    <Bio />
+                    {/* <Bio nav={navigate} /> */}
                     
                     {addingPost === false
                         ? <button onClick={() => setAddingPost(true)} className="add-post-btn">Přidat záznam</button>
