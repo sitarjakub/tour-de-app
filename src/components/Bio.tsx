@@ -8,8 +8,6 @@ const Bio = () => {
     const {user} = useUser();
     const [username, setUsername] = useState<string|null>(null);
 
-    const nav = useNavigate();
-
     const [editing, setEditing] = useState<boolean>(false);
     const [newUsername, setNewUsername] = useState<string>("");
 
@@ -57,7 +55,7 @@ const Bio = () => {
                         }} />
                         <button type="submit"><div></div></button>
                     </div>
-                    <button className="bio-delete-profile" onClick={() => nav("/delete")}>Odstranit profil</button>
+                    {/* <button className="bio-delete-profile" onClick={() => nav("/delete")}>Odstranit profil</button> */}
                 </form>
             }
         </div>
