@@ -12,7 +12,6 @@ import { useState } from 'react';
 import DeleteAcc from './components/DeleteAcc';
 
 function App() {
-  const {setUser} = useUser();
   const [displaySidebar, setDisplaySidebar] = useState<boolean>(false);
 
   function RequireAuth({children}:{children:JSX.Element}):JSX.Element {
@@ -48,7 +47,7 @@ function App() {
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
-          <Route path='/' element={<RequireAuth><Home /></RequireAuth>} />
+          <Route path='/' element={<Home />} />
           <Route path='/friends' element={<RequireAuth><Friends /></RequireAuth>} />
           <Route path='/categories' element={<RequireAuth><Categories /></RequireAuth>} />
           <Route path='/delete' element={<RequireAuth><DeleteAcc /></RequireAuth>} />
