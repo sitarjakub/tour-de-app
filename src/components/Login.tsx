@@ -26,7 +26,7 @@ const Login = () => {
             signInWithEmailAndPassword(auth, data.email, data.password)
                 .then((userCredential) => {
                     setUser(userCredential.user.uid);
-                    navigate('/friends');
+                    navigate('/');
                 })
                 .catch((err) => {
                     if(err.code === "auth/wrong-password" || err.code === "auth/user-not-found"){

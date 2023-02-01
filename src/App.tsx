@@ -47,7 +47,7 @@ function App() {
         <Routes>
           <Route path='/login' element={<Login />} />
           <Route path='/register' element={<Register />} />
-          <Route path='/' element={<Home />} />
+          <Route path='/' element={<RequireAuth><Home /></RequireAuth>} />
           <Route path='/friends' element={<RequireAuth><Friends /></RequireAuth>} />
           <Route path='/categories' element={<RequireAuth><Categories /></RequireAuth>} />
           <Route path='/delete' element={<RequireAuth><DeleteAcc /></RequireAuth>} />
