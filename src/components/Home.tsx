@@ -6,7 +6,6 @@ import '../css/home.css';
 import { collection, doc, getDoc, getDocs, onSnapshot, query, setDoc } from "firebase/firestore";
 import Post from "./Post";
 import Bio from "./Bio";
-import { useNavigate } from "react-router";
 
 interface PostData {
     date?: string,
@@ -39,8 +38,6 @@ export interface Filters {
 
 const Home = () => {
     const {user} = useUser();
-    
-    //const navigate = useNavigate();
 
     const [loading, setLoading] = useState<boolean>(false);
 
@@ -258,7 +255,6 @@ const Home = () => {
                 : <>
                 <div className="home-content">
                     <Bio />
-                    {/* <Bio nav={navigate} /> */}
                     
                     {addingPost === false
                         ? <button onClick={() => setAddingPost(true)} className="add-post-btn">Přidat záznam</button>
